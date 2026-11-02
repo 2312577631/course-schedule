@@ -1,4 +1,4 @@
-const CACHE_NAME = "course-schedule-v11";
+const CACHE_NAME = "course-schedule-v12";
 const APP_ASSETS = [
   "./",
   "./index.html",
@@ -6,9 +6,9 @@ const APP_ASSETS = [
   "./app.js",
   "./manifest.webmanifest",
   "./icon.svg",
-  "./icons/icon-180.png",
-  "./icons/icon-192.png",
-  "./icons/icon-512.png",
+  "./icon-180.png",
+  "./icon-192.png",
+  "./icon-512.png",
 ];
 
 self.addEventListener("install", (event) => {

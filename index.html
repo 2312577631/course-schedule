@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#f6f3eb" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="我的课表" />
+    <meta name="format-detection" content="telephone=no" />
+    <title>我的课表</title>
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="./icons/icon-180.png" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <div class="sticky-top">
+        <header class="topbar">
+          <div class="week-nav">
+            <button class="week-arrow" id="previousWeek" type="button" aria-label="上一周">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg>
+            </button>
+            <button class="week-title" id="weekButton" type="button" aria-label="回到当前周">
+              <span id="weekLabel">第 7 周</span>
+              <small>2026-2027 第 1 学期</small>
+            </button>
+            <button class="week-arrow" id="nextWeek" type="button" aria-label="下一周">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
+            </button>
+          </div>
+          <button class="icon-button" id="settingsButton" type="button" aria-label="打开设置">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 15.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4Z" />
+              <path d="M19.4 13a7.7 7.7 0 0 0 0-2l2-1.5-2-3.4-2.5 1a8 8 0 0 0-1.7-1L15 3.4h-4L10.6 6a8 8 0 0 0-1.7 1l-2.5-1-2 3.4 2 1.5a7.7 7.7 0 0 0 0 2l-2 1.5 2 3.4 2.5-1a8 8 0 0 0 1.7 1l.4 2.7h4l.4-2.7a8 8 0 0 0 1.7-1l2.5 1 2-3.4-2.2-1.4Z" />
+            </svg>
+          </button>
+        </header>
+
+        <section class="calendar-head" aria-label="本周日期">
+          <div class="month-label" id="monthLabel">10月</div>
+          <div class="day-heads" id="dayHeads"></div>
+        </section>
+      </div>
+
+      <main class="timetable">
+        <div class="time-axis" id="timeAxis" aria-hidden="true"></div>
+        <div class="week-grid" id="weekGrid" aria-live="polite"></div>
+      </main>
+
+      <section class="other-courses" id="otherCourses" hidden>
+        <div class="section-heading">
+          <span>其他课程</span>
+          <small>无固定节次</small>
+        </div>
+        <div id="otherCourseList"></div>
+      </section>
+
+      <footer>
+        <span>富春校区教学作息</span>
+        <button id="installHintButton" type="button">添加到主屏幕</button>
+      </footer>
+    </div>
+
+    <div class="sheet-backdrop" id="sheetBackdrop" hidden></div>
+
+    <section class="bottom-sheet" id="detailSheet" role="dialog" aria-modal="true" aria-labelledby="detailTitle" hidden>
+      <div class="sheet-handle"></div>
+      <div class="sheet-head">
+        <div>
+          <p class="sheet-kicker" id="detailKicker"></p>
+          <h2 id="detailTitle"></h2>
+        </div>
+        <button class="close-button" type="button" data-close-sheet aria-label="关闭">×</button>
+      </div>
+      <div class="sheet-body" id="detailBody"></div>
+    </section>
+
+    <section class="bottom-sheet" id="settingsSheet" role="dialog" aria-modal="true" aria-labelledby="settingsTitle" hidden>
+      <div class="sheet-handle"></div>
+      <div class="sheet-head">
+        <div>
+          <p class="sheet-kicker">课程表设置</p>
+          <h2 id="settingsTitle">学期起始日</h2>
+        </div>
+        <button class="close-button" type="button" data-close-sheet aria-label="关闭">×</button>
+      </div>
+      <div class="sheet-body">
+        <label class="field-label" for="startDateInput">第 1 周星期一的日期</label>
+        <input id="startDateInput" type="date" />
+        <p class="helper-text">周次和每天对应的日期会据此自动计算。</p>
+        <button class="primary-button" id="saveSettings" type="button">保存设置</button>
+        <button class="text-button" id="resetSettings" type="button">恢复默认日期</button>
+        <div class="settings-note">
+          <strong>离线使用</strong>
+          <p>课表数据保存在 App 内，不联网也能查看。设置仅保存在当前设备。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="bottom-sheet" id="installSheet" role="dialog" aria-modal="true" aria-labelledby="installTitle" hidden>
+      <div class="sheet-handle"></div>
+      <div class="sheet-head">
+        <div>
+          <p class="sheet-kicker">iPhone 安装方法</p>
+          <h2 id="installTitle">添加到主屏幕</h2>
+        </div>
+        <button class="close-button" type="button" data-close-sheet aria-label="关闭">×</button>
+      </div>
+      <div class="sheet-body">
+        <ol class="install-steps">
+          <li>用 Safari 打开这个课程表网页。</li>
+          <li>点击浏览器底部的“分享”按钮。</li>
+          <li>向下找到并点击“添加到主屏幕”。</li>
+          <li>确认名称后点“添加”，以后从桌面直接打开。</li>
+        </ol>
+        <p class="helper-text">网址发生变化时需要重新添加。</p>
+      </div>
+    </section>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
